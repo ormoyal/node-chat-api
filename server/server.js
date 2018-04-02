@@ -23,10 +23,11 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newMessage', generateMessage('Admin','New User Join To The Chat'));
 
 
-    socket.on('createMessage' , (someMessage) => {
+    socket.on('createMessage' , (someMessage,cb) => {
         console.log(`new message: ${JSON.stringify(someMessage)}. At- ${new Date()}`)
         io.emit('newMessage',generateMessage(someMessage.from, someMessage.text));
-    })
+        cb('finish from server');
+    });
 
     socket.on('disconnect', () => {
         console.log('disconnect from browser');
