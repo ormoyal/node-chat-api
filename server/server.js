@@ -16,6 +16,18 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     console.log('user connect to server');
 
+    socket.emit('newMessage', {
+        from:'Admin',
+        text:'welcome to the chat!',
+        createdAt: new Date().getTime()
+    })
+
+    socket.broadcast.emit('newMessage', {
+        from:'Admin',
+        text:'User Join to Chat-App',
+        createdAt:new Date()
+    })
+
     socket.on('createMessage' , (someMessage) => {
         console.log(`new message: ${JSON.stringify(someMessage)}. At- ${new Date()}`)
         io.emit('newMessage',{
