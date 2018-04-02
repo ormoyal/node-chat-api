@@ -16,6 +16,14 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     console.log('user connect to server');
 
+    socket.on('createMessage' , (someMessage) => {
+        console.log(`new message: ${JSON.stringify(someMessage)}. At- ${new Date()}`)
+        io.emit('newMessage',{
+            from: someMessage.from,
+            text: someMessage.text
+        });
+    })
+
     socket.on('disconnect', () => {
         console.log('disconnect from browser');
     })
