@@ -45,4 +45,6 @@ server.listen(process.env.PORT, () => {
     console.log(`run on port ${process.env.PORT}`);
 })
 
-
+module.exports = {
+    server
+}

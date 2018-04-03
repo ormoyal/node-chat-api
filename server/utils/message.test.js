@@ -1,5 +1,5 @@
 const expect = require('expect');
-
+const {server} = require('./../server');
 const {generateMessage,generateLocationMessage} = require('./message');
 
 describe('generateMessage util', () => {
