@@ -6,7 +6,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 const app = express();
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage,generateLocationMessage} = require('./utils/message');
 
 
 process.env.PORT = process.env.PORT || 3000;
@@ -27,6 +27,10 @@ io.on('connection', (socket) => {
         console.log(`new message: ${JSON.stringify(someMessage)}. At- ${new Date()}`)
         io.emit('newMessage',generateMessage(someMessage.from, someMessage.text));
         cb('finish from server');
+    });
+
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage',generateLocationMessage('Admin',coords.lat, coords.long));
     });
 
     socket.on('disconnect', () => {
