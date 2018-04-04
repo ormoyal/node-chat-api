@@ -5,9 +5,9 @@ socket.on('connect', function() {
 })
 
 socket.on('newMessage', (message) => {
-    console.log('new message send:',JSON.stringify(message));
+    var formattedTime = moment(message.createdAt).format('HH:mm a');
     var li = jQuery('<li></li>');
-    li.text(` ${message.from}: ${message.text}`);
+    li.text(` ${message.from} ${formattedTime}: ${message.text}`);
     jQuery('#messagesList').append(li);
 });
 
@@ -21,7 +21,7 @@ jQuery('#myForm').on('submit', function(e){
         text:textField.val()
     },function(response){
         textField.val('').focus();
-        console.log('1 ',response)
+        console.log('this message represent ',response)
     });
 });
 
@@ -44,10 +44,11 @@ locationB.on('click', function(){
 });
 
 socket.on('newLocationMessage', function (locationMessage) {
+    var formattedTime = moment(locationMessage.createdAt).format('HH:mm a');
     var a = jQuery('<a target="_blank">Your On The Map!</a>')
     a.attr('href', locationMessage.url);
     var li = jQuery('<li></li>');
-    li.text(locationMessage.from + ': ');
+    li.text(locationMessage.from + '' + formattedTime + ': ');
     li.append(a);
     jQuery('#messagesList').append(li);
 });
