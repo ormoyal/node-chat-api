@@ -24,12 +24,13 @@ io.on('connection', (socket) => {
 
 
 	socket.on('join',(params, cb) => {
-        console.log(params);
 
         if(!isRealString(params.name) || !isRealString(params.room)){
             return cb('name and room are required');
         }
 
+         console.log('8888888888888 ',socket.adapter.rooms);
+        console.log('777777777777 ',socket.rooms);
 
         socket.join(params.room);
         users.removeUser(socket.id)
@@ -49,13 +50,19 @@ io.on('connection', (socket) => {
 
 
 	socket.on('createMessage' , (someMessage,cb) => {
-		console.log(`new message: ${JSON.stringify(someMessage)}. At- ${new Date()}`);
-		io.emit('newMessage',generateMessage(users.getUser(socket.id).name, someMessage.text));
-		cb('finish from server');
+	    var user = users.getUser(socket.id);
+
+	    if(user && isRealString(someMessage.text)){
+            io.to(user.room).emit('newMessage',generateMessage(user.name, someMessage.text));
+        }
+        cb('finish from server');
+
 	});
 
 	socket.on('createLocationMessage', (coords) => {
-		io.emit('newLocationMessage',generateLocationMessage('Admin',coords.lat, coords.long));
+        var user = users.getUser(socket.id);
+        if(user)
+        io.to(user.room).emit('newLocationMessage',generateLocationMessage(user.name,coords.lat, coords.long));
 	});
 
 	socket.on('disconnect', () => {

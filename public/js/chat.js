@@ -58,7 +58,6 @@ jQuery('#myForm').on('submit', function(e){
     console.log('socket Client ',socket.id);
 
     socket.emit('createMessage',{
-        from:'User',
         text:textField.val()
     },function(response){
         textField.val('').focus();
