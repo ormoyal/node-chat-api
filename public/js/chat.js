@@ -18,10 +18,21 @@ function scrollToBottom(){
 };
 
 
-
 socket.on('connect', function() {
     console.log('connect to server');
+    var params = jQuery.deparam(window.location.search);
+    socket.emit('join', params, function(err){
+        if(err){
+            alert(err);
+            window.location.href = '/';
+        }else{
+            console.log('Joining to Chat');
+        }
+    });
+
+
 });
+
 
 socket.on('newMessage', (message) => {
 
@@ -36,7 +47,7 @@ socket.on('newMessage', (message) => {
     scrollToBottom();
 
     // var li = jQuery('<li></li>');
-    // li.text(` ${message.from} ${formattedTime}: ${message.text}`);
+    // li.text(` ${messagedw.from} ${formattedTime}: ${message.text}`);
     // jQuery('#messagesList').append(li);
 });
 
@@ -44,6 +55,7 @@ socket.on('newMessage', (message) => {
 jQuery('#myForm').on('submit', function(e){
     e.preventDefault();
     var textField = jQuery('[name=myMessage]');
+    console.log('socket Client ',socket.id);
 
     socket.emit('createMessage',{
         from:'User',
@@ -72,6 +84,7 @@ locationB.on('click', function(){
     });
 });
 
+
 socket.on('newLocationMessage', function (locationMessage) {
     var formattedTime = moment(locationMessage.createdAt).format('HH:mm a');
     var template = $('#location-message-template').html();
@@ -81,19 +94,28 @@ socket.on('newLocationMessage', function (locationMessage) {
         url: locationMessage.url,
         createdAt: formattedTime
     });
-
     $('#messagesList').append(html);
     $('[name=myMessage]').focus();
     scrollToBottom();
-
-
-
     // var a = jQuery('<a target="_blank">Your On The Map!</a>')
     // a.attr('href', locationMessage.url);
     // var li = jQuery('<li></li>');
     // li.text(locationMessage.from + '' + formattedTime + ': ');
     // li.append(a);
     // jQuery('#messagesList').append(li);
+});
+
+
+socket.on('updateUserList',function(users){
+   console.log('users list ', users);
+   var ol = $('<ol></ol>');
+   users.forEach(user => {
+       ol.append($('<li></li>').text(user));
+   });
+
+   $('#users').html(ol);
+
+
 });
 
 
